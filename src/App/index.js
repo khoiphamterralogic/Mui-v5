@@ -8,6 +8,7 @@ import Navigation from "../NavigationBar";
 import SignIn from "../SignIn";
 import SignUp from "../SignUp";
 import theme from "../theme";
+import UserProfile from "../User/Profile";
 
 function App() {
   return (
@@ -16,7 +17,10 @@ function App() {
         <CssBaseline />
         <Routes>
           <Route path="/" element={<Navigation />}>
-            <Route index element={<Home />} />
+            <Route path="/" element={<Home />}>
+              <Route path="profile" element={<UserProfile />} />
+            </Route>
+
             <Route path="sign-in" element={<SignIn />} />
             <Route path="sign-up" element={<SignUp />} />
           </Route>

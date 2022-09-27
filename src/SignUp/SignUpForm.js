@@ -41,10 +41,7 @@ const SignUpForm = () => {
         control={<Checkbox defaultChecked />}
         label="I want to receive inspiration, marketing promotions and updates via email."
       />
-      <LoadingButton
-        sx={{ width: "80%", m: "0 auto", mt: 2 }}
-        variant="contained"
-      >
+      <LoadingButton sx={{ mt: 2 }} variant="contained">
         SIGN UP
       </LoadingButton>
     </Box>

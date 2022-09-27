@@ -1,18 +1,34 @@
-import React, { useState } from "react";
-import WelcomeMessage from "./WelcomeMessage";
+import { Box } from "@mui/system";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import ResponsiveDrawer from "../Drawer";
 
 function Home() {
-  const [mess, setMess] = useState("");
-  const getWelcomeMess = (messsage) => {
-    console.log("message", messsage);
-    setMess(messsage);
-  };
-
   return (
-    <div>
-      <WelcomeMessage getMess={getWelcomeMess} val={mess} />
-      <p>{mess}</p>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        flex: "1 1 auto",
+        overflow: "hidden",
+        height: "100%",
+      }}
+    >
+      <Box sx={{ width: ["none", "none", 240] }}>
+        <ResponsiveDrawer />
+      </Box>
+      <Box
+        sx={{
+          py: 2,
+          overflowX: "hidden",
+          overflowY: "auto",
+          width: "100%",
+          px: 2,
+          backgroundColor: "#d7dcf6",
+        }}
+      >
+        <Outlet />
+      </Box>
+    </Box>
   );
 }
 
