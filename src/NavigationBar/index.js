@@ -109,7 +109,7 @@ const ProfileMenu = ({ anchorEl, handleClose }) => {
             <ListItemText>Settings</ListItemText>
           </MenuItem>
           <Divider />
-          <MenuItem>
+          <MenuItem component={Link} to="/sign-in">
             <ListItemIcon>
               <ExitToAppIcon fontSize="small" />
             </ListItemIcon>

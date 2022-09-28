@@ -19,10 +19,9 @@ function App() {
           <Route path="/" element={<Navigation />}>
             <Route path="/" element={<Home />}>
               <Route path="profile" element={<UserProfile />} />
+              <Route path="sign-in" element={<SignIn />} />
+              <Route path="sign-up" element={<SignUp />} />
             </Route>
-
-            <Route path="sign-in" element={<SignIn />} />
-            <Route path="sign-up" element={<SignUp />} />
           </Route>
         </Routes>
       </ThemeProvider>
