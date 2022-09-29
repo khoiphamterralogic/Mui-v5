@@ -1,14 +1,5 @@
-import { useEffect } from "react";
-import { getRedirectResult } from "firebase/auth";
-import {
-  auth,
-  // signInWithGooglePopup,
-  createUserDocument,
-  // signInWithGoogleRedirect,
-} from "../utils/firebase/firebase";
 import {
   Box,
-  Button,
   Checkbox,
   Divider,
   FormControlLabel,
@@ -17,28 +8,71 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  createUserDocument,
+  // signInWithGoogleRedirect,
+  signInWithEmailPassword,
+  signInWithGooglePopup,
+} from "../utils/firebase/firebase";
 
 //MUI Icons
 import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import { LoadingButton } from "@mui/lab";
+
+const defaultFormValues = {
+  email: "",
+  password: "",
+};
 
 const SignIn = () => {
-  useEffect(() => {
-    const response = getRedirectResult(auth);
-    if (response) {
-      const userDocRef = createUserDocument(response.user);
-      console.log({ userDocRef });
-    }
-  }, []);
+  const navigate = useNavigate();
 
-  // const logInGooglePopUp = async () => {
-  //   const { user } = await signInWithGooglePopup();
-  //   const userDocRef = await createUserDocument(user);
-  //   console.log({ userDocRef });
-  // };
+  const [formValues, setFormValues] = useState(defaultFormValues);
+  const { email, password } = formValues;
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await signInWithEmailPassword(email, password);
+      setFormValues(defaultFormValues);
+      if (res) {
+        navigate("/");
+      }
+      console.log({ res });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      switch (error.code) {
+        case "auth/wrong-password": {
+          setErr("Password is not correct!");
+          break;
+        }
+        default: {
+          console.log({ error });
+        }
+      }
+    }
+  };
+
+  const logInGooglePopUp = async () => {
+    const { user } = await signInWithGooglePopup();
+    await createUserDocument(user);
+    navigate("/");
+  };
 
   return (
     <Box
@@ -66,8 +100,24 @@ const SignIn = () => {
         <Typography sx={{ pb: 3 }}>
           Please sign-in to your account and start the adventure
         </Typography>
-        <TextField size="small" fullWidth label="Email" />
-        <TextField size="small" fullWidth label="Password" type="password" />
+        <TextField
+          size="small"
+          fullWidth
+          label="Email"
+          name="email"
+          value={email}
+          onChange={handleChange}
+        />
+        <TextField
+          size="small"
+          fullWidth
+          label="Password"
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleChange}
+        />
+        {err.length !== 0 && <Typography color="red">{err}</Typography>}
         <Box
           sx={{
             width: "100%",
@@ -83,9 +133,16 @@ const SignIn = () => {
           />
           <Link>Forgot Password?</Link>
         </Box>
-        <Button sx={{ mb: 3 }} variant="contained" fullWidth color="secondary">
+        <LoadingButton
+          loading={loading}
+          sx={{ mb: 3 }}
+          variant="contained"
+          fullWidth
+          color="secondary"
+          onClick={handleSubmit}
+        >
           LOGIN
-        </Button>
+        </LoadingButton>
         <Typography>
           New on our platform? <Link to="/sign-up">Create an account</Link>
         </Typography>
@@ -99,7 +156,8 @@ const SignIn = () => {
             pt: 1,
           }}
         >
-          <Divider sx={{ width: "45%" }} /> or
+          <Divider sx={{ width: "45%" }} />
+          or
           <Divider sx={{ width: "45%" }} />
         </Box>
         <Box>
@@ -112,7 +170,7 @@ const SignIn = () => {
           <IconButton>
             <GitHubIcon color="inherit" />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={logInGooglePopUp}>
             <GoogleIcon color="warning" />
           </IconButton>
         </Box>

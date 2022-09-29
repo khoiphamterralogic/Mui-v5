@@ -13,7 +13,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  MenuList,
+  MenuList
 } from "@mui/material";
 
 //MUI Icon
@@ -141,6 +141,7 @@ const Navigation = () => {
           height: 50,
           px: 1,
           display: "flex",
+          position: "relative",
           justifyContent: "space-between",
           alignItems: "center",
           boxShadow:
@@ -153,12 +154,24 @@ const Navigation = () => {
             display: "flex",
             width: "min(224px, 15%)",
             alignItems: "center",
+            justifyContent: "space-between",
             height: "100%",
+            "& img": {
+              width: ["100%", "100%", "60%", "50%"],
+              ml: 2,
+            },
           }}
         >
+          <Link to="/">
+            <img
+              src="https://www.developedconstructiongroup.com/dyna-builder/user_images/untitled.jpg?img_id=12&sbid=20326"
+              alt="logo"
+            />
+          </Link>
           <IconButton>
             <ReorderIcon />
           </IconButton>
+
           {/* Search Bar */}
         </Box>
 
