@@ -1,3 +1,7 @@
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+//MUI components
 import {
   Box,
   Checkbox,
@@ -8,8 +12,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
+//Utils
 import {
   createUserDocument,
   // signInWithGoogleRedirect,
@@ -24,6 +28,9 @@ import GoogleIcon from "@mui/icons-material/Google";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import { LoadingButton } from "@mui/lab";
 
+//Context
+import { UserContext } from "../contexts/userContext";
+
 const defaultFormValues = {
   email: "",
   password: "",
@@ -31,6 +38,7 @@ const defaultFormValues = {
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const { setCurrentUser } = useContext(UserContext);
 
   const [formValues, setFormValues] = useState(defaultFormValues);
   const { email, password } = formValues;
@@ -47,12 +55,12 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const res = await signInWithEmailPassword(email, password);
+      const { user } = await signInWithEmailPassword(email, password);
       setFormValues(defaultFormValues);
-      if (res) {
+      if (user) {
+        setCurrentUser(user);
         navigate("/");
       }
-      console.log({ res });
       setLoading(false);
     } catch (error) {
       setLoading(false);

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { alpha, Box } from "@mui/system";
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
 //MUI
@@ -13,7 +13,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  MenuList
+  MenuList,
 } from "@mui/material";
 
 //MUI Icon
@@ -30,6 +30,8 @@ import TranslateIcon from "@mui/icons-material/Translate";
 
 //components
 import UserAvatar from "./Avatar";
+import { UserContext } from "../contexts/userContext";
+import { signOutUser } from "../utils/firebase/firebase";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -77,7 +79,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const ProfileMenu = ({ anchorEl, handleClose }) => {
+  const { setCurrentUser } = useContext(UserContext);
   const open = Boolean(anchorEl);
+  const handleCickSignOut = async () => {
+    await signOutUser();
+    setCurrentUser(null);
+  };
 
   return (
     <Fragment>
@@ -109,7 +116,7 @@ const ProfileMenu = ({ anchorEl, handleClose }) => {
             <ListItemText>Settings</ListItemText>
           </MenuItem>
           <Divider />
-          <MenuItem component={Link} to="/sign-in">
+          <MenuItem component={Link} to="/sign-in" onClick={handleCickSignOut}>
             <ListItemIcon>
               <ExitToAppIcon fontSize="small" />
             </ListItemIcon>
@@ -124,6 +131,9 @@ const ProfileMenu = ({ anchorEl, handleClose }) => {
 const Navigation = () => {
   const [mode, setMode] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const { currentUser } = useContext(UserContext);
+  console.log({ currentUser });
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
